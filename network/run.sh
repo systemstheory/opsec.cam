@@ -10,7 +10,7 @@ ezkl setup --compiled-circuit ./artifacts/model.compiled --srs-path=${SRS_PATH} 
   --vk-path=./artifacts/vk.key --pk-path=./artifacts/pk.key
 
 # Verifier setup
-ezkl create-evm-verifier --srs-path ${SRS_PATH} -S ./artifacts/settings.json --vk-path ./artifacts/vk.key --sol-code-path ../contracts/Halo2Verifier.sol
+ezkl create-evm-verifier --srs-path ${SRS_PATH} -S ./artifacts/settings.json --vk-path ./artifacts/vk.key --sol-code-path ../contracts/src/Halo2Verifier.sol
 scp ./artifacts/vocabulary.json ./artifacts/settings.json ../contracts/config
 
 # Copy artifacts over to the website/static/artifacts folder
