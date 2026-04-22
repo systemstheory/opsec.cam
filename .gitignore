@@ -1,2 +1,4 @@
 .DS_Store
 AGENT_SPEC.md
+network/artifacts/
+website/static/artifacts/
