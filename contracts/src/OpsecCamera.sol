@@ -14,17 +14,19 @@ contract OpsecCamera is ERC721, ERC721Enumerable, ERC721Pausable, Ownable, Reent
     using Strings for uint256;
 
     address public immutable verifier;
+    uint256 public immutable maxSupply;
 
     string[] private _words;
 
     // tokenId => top 6 word indices
     mapping(uint256 => uint8[6]) private _tokenLabels;
 
-    constructor(address _verifier, string[] memory words, address _owner)
+    constructor(address _verifier, string[] memory words, address _owner, uint256 _maxSupply)
         ERC721("opsec.camera", "OPSEC")
         Ownable(_owner)
     {
         verifier = _verifier;
+        maxSupply = _maxSupply;
         _words = words;
     }
 
@@ -39,6 +41,7 @@ contract OpsecCamera is ERC721, ERC721Enumerable, ERC721Pausable, Ownable, Reent
         require(instances.length == _words.length, "bad instances");
 
         uint256 id = totalSupply();
+        require(id < maxSupply, "max supply reached");
         _tokenLabels[id] = _topSix(instances);
         _safeMint(msg.sender, id);
 

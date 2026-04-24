@@ -9,6 +9,8 @@ import {Halo2Verifier} from "../src/Halo2Verifier.sol";
 contract Deploy is Script {
     using stdJson for string;
 
+    uint256 constant MAX_SUPPLY = 500;
+
     function run() external {
         string memory json = vm.readFile("./config/vocabulary.json");
         uint256 wordCount = vm.parseJsonKeys(json, "$").length;
@@ -21,7 +23,7 @@ contract Deploy is Script {
         vm.startBroadcast();
 
         Halo2Verifier verifier = new Halo2Verifier();
-        new OpsecCamera(address(verifier), words, msg.sender);
+        new OpsecCamera(address(verifier), words, msg.sender, MAX_SUPPLY);
 
         vm.stopBroadcast();
     }
