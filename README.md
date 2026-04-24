@@ -1,2 +1,0 @@
-# opsec.camera
-
