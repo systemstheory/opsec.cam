@@ -13,20 +13,24 @@ import {IHalo2Verifier} from "./IHalo2Verifier.sol";
 contract OpsecCamera is ERC721, ERC721Enumerable, ERC721Pausable, Ownable, ReentrancyGuard {
     using Strings for uint256;
 
-    address public immutable verifier;
-    uint256 public immutable maxSupply;
+    uint256 public constant REGISTERS = 8;
+    uint256 public constant WORDS_PER_REGISTER = 8;
+
+    address public immutable VERIFIER;
+    uint256 public immutable MAX_SUPPLY;
 
     string[] private _words;
 
-    // tokenId => top 6 word indices
-    mapping(uint256 => uint8[6]) private _tokenLabels;
+    // tokenId => top word index per register (8 registers)
+    mapping(uint256 => uint8[8]) private _tokenLabels;
 
     constructor(address _verifier, string[] memory words, address _owner, uint256 _maxSupply)
         ERC721("opsec.camera", "OPSEC")
         Ownable(_owner)
     {
-        verifier = _verifier;
-        maxSupply = _maxSupply;
+        require(words.length == REGISTERS * WORDS_PER_REGISTER, "wordlist must be 64 words");
+        VERIFIER = _verifier;
+        MAX_SUPPLY = _maxSupply;
         _words = words;
     }
 
@@ -38,23 +42,23 @@ contract OpsecCamera is ERC721, ERC721Enumerable, ERC721Pausable, Ownable, Reent
     // ── Mint ───────────────────────────────────────────────────────────────────
 
     function mint(bytes calldata proof, uint256[] calldata instances) external nonReentrant whenNotPaused {
-        require(instances.length == _words.length, "bad instances");
+        require(instances.length == REGISTERS * WORDS_PER_REGISTER, "bad instances");
 
         uint256 id = totalSupply();
-        require(id < maxSupply, "max supply reached");
-        _tokenLabels[id] = _topSix(instances);
+        require(id < MAX_SUPPLY, "max supply reached");
+        _tokenLabels[id] = _topPerRegister(instances);
         _safeMint(msg.sender, id);
 
-        require(IHalo2Verifier(verifier).verifyProof(proof, instances), "proof invalid");
+        require(IHalo2Verifier(VERIFIER).verifyProof(proof, instances), "proof invalid");
     }
 
     // ── Metadata ───────────────────────────────────────────────────────────────
 
     function tokenURI(uint256 id) public view override returns (string memory) {
         _requireOwned(id);
-        uint8[6] memory lbls = _tokenLabels[id];
+        uint8[8] memory lbls = _tokenLabels[id];
 
-        string memory svg = _buildSVG(lbls);
+        string memory svg = _buildSvg(lbls);
         string memory json = string(abi.encodePacked(
             '{"name":"opsec.camera #', id.toString(), '",',
             '"attributes":[',
@@ -63,42 +67,43 @@ contract OpsecCamera is ERC721, ERC721Enumerable, ERC721Pausable, Ownable, Reent
             '{"trait_type":"label 3","value":"', _words[lbls[2]], '"},',
             '{"trait_type":"label 4","value":"', _words[lbls[3]], '"},',
             '{"trait_type":"label 5","value":"', _words[lbls[4]], '"},',
-            '{"trait_type":"label 6","value":"', _words[lbls[5]], '"}',
+            '{"trait_type":"label 6","value":"', _words[lbls[5]], '"},',
+            '{"trait_type":"label 7","value":"', _words[lbls[6]], '"},',
+            '{"trait_type":"label 8","value":"', _words[lbls[7]], '"}',
             '],"image":"data:image/svg+xml;base64,', Base64.encode(bytes(svg)), '"}'
         ));
 
         return string(abi.encodePacked("data:application/json;base64,", Base64.encode(bytes(json))));
     }
 
-    function labels(uint256 id) external view returns (string[6] memory out) {
+    function labels(uint256 id) external view returns (string[8] memory out) {
         _requireOwned(id);
-        uint8[6] memory lbls = _tokenLabels[id];
-        for (uint256 i = 0; i < 6; i++) {
+        uint8[8] memory lbls = _tokenLabels[id];
+        for (uint256 i = 0; i < 8; i++) {
             out[i] = _words[lbls[i]];
         }
     }
 
     // ── Internal ───────────────────────────────────────────────────────────────
 
-    function _topSix(uint256[] calldata scores) internal view returns (uint8[6] memory) {
-        uint8[6] memory result;
-        bool[] memory used = new bool[](_words.length);
-        for (uint256 i = 0; i < 6; i++) {
-            uint256 best;
-            uint8 bestIdx;
-            for (uint8 j = 0; j < uint8(_words.length); j++) {
-                if (!used[j] && scores[j] >= best) {
-                    best = scores[j];
-                    bestIdx = j;
+    function _topPerRegister(uint256[] calldata scores) internal pure returns (uint8[8] memory) {
+        uint8[8] memory result;
+        for (uint256 r = 0; r < REGISTERS; r++) {
+            uint256 base = r * WORDS_PER_REGISTER;
+            uint256 best = scores[base];
+            uint8 bestIdx = uint8(base);
+            for (uint256 j = 1; j < WORDS_PER_REGISTER; j++) {
+                if (scores[base + j] > best) {
+                    best = scores[base + j];
+                    bestIdx = uint8(base + j);
                 }
             }
-            result[i] = bestIdx;
-            used[bestIdx] = true;
+            result[r] = bestIdx;
         }
         return result;
     }
 
-    function _buildSVG(uint8[6] memory lbls) internal view returns (string memory) {
+    function _buildSvg(uint8[8] memory lbls) internal view returns (string memory) {
         return string(abi.encodePacked(
             '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
             '<style>.t{fill:white;font-family:Georgia,serif;font-size:14px}</style>',
@@ -109,6 +114,8 @@ contract OpsecCamera is ERC721, ERC721Enumerable, ERC721Pausable, Ownable, Reent
             '<text x="10" y="160" class="t">', _words[lbls[3]], '</text>',
             '<text x="10" y="200" class="t">', _words[lbls[4]], '</text>',
             '<text x="10" y="240" class="t">', _words[lbls[5]], '</text>',
+            '<text x="10" y="280" class="t">', _words[lbls[6]], '</text>',
+            '<text x="10" y="320" class="t">', _words[lbls[7]], '</text>',
             '</svg>'
         ));
     }

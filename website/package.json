@@ -11,7 +11,17 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"upload:artifacts": "aws s3 sync ./static/artifacts s3://$R2_BUCKET/artifacts --endpoint-url $R2_ENDPOINT_URL --exclude \".DS_Store\" --exclude \".cache/*\"",
+		"upload:model": "aws s3 sync ./static/model s3://$R2_BUCKET/model --exclude \".DS_Store\" --exclude \".cache/*\" --endpoint-url $R2_ENDPOINT_URL"
+	},
+	"dependencies": {
+		"@ezkljs/engine": "3.9.3",
+		"@huggingface/transformers": "^3",
+		"json-bigint": "^1.0.0",
+		"json-bigint-patch": "^0.0.9",
+		"viem": "^2",
+		"wagmi": "^2"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.4",
@@ -19,6 +29,7 @@
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/kit": "^2.57.0",
 		"@sveltejs/vite-plugin-svelte": "^7.0.0",
+		"@swc/core": "^1.15.32",
 		"@types/node": "^24",
 		"eslint": "^10.2.0",
 		"eslint-config-prettier": "^10.1.8",
@@ -26,10 +37,13 @@
 		"globals": "^17.4.0",
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.5.1",
+		"rollup": "^4.60.2",
 		"svelte": "^5.55.2",
 		"svelte-check": "^4.4.6",
 		"typescript": "^6.0.2",
 		"typescript-eslint": "^8.58.1",
-		"vite": "^8.0.7"
+		"vite": "^8.0.7",
+		"vite-plugin-top-level-await": "^1.6.0",
+		"vite-plugin-wasm": "^3.6.0"
 	}
 }

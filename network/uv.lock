@@ -130,6 +130,20 @@ nvtx = [
 ]
 
 [[package]]
+name = "ezkl"
+version = "23.0.5"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/dc/19/a3faff8977e5502edd33239da3b86f68fe9d499eec53876b9f67322fd842/ezkl-23.0.5-cp37-abi3-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2.whl", hash = "sha256:a457f2b1930ceb6a2d73c24e874edf4e197107ded8f97a86d38b13045e7ffe44", size = 22044699, upload-time = "2026-02-20T20:15:05.17Z" },
+    { url = "https://files.pythonhosted.org/packages/0d/e3/d4ed7b3c1e4bece9fee1b26d001204d10698b07b15a8f9005ebc16e823bf/ezkl-23.0.5-cp37-abi3-macosx_10_12_x86_64.whl", hash = "sha256:a1d8e1930372419a655ddad9b888bb3d9ffba7fb88d941c31b2d706708327531", size = 11582097, upload-time = "2026-02-20T20:15:07.963Z" },
+    { url = "https://files.pythonhosted.org/packages/ee/31/980432d17a4b9076eeec0a71626bc13e3b88c03e6ac0c2d2bec2c8147354/ezkl-23.0.5-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1c7f59745fcdd2270be7eabe9d11e6821253275eb6a23709ba19b30d28815b3e", size = 14205141, upload-time = "2026-02-20T20:15:10.873Z" },
+    { url = "https://files.pythonhosted.org/packages/0b/4a/4967ab0ee242d4517e32ed67d31f5cbe55b3c7ada175eeae9d0859b1840f/ezkl-23.0.5-cp37-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:5f54bad52521c59ac2cbae9a69c9026861da124b76f5b632d529d2bebb36453f", size = 13742421, upload-time = "2026-02-20T20:15:13.799Z" },
+    { url = "https://files.pythonhosted.org/packages/b0/26/62aa7c614cd70277888f8b19515cf1f96835da71dbaec93941637e5d199d/ezkl-23.0.5-cp37-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:bdae7f9756d864396c3a764b9322edbc8c61f07d7df1047c72dee1aaf1318009", size = 14451466, upload-time = "2026-02-20T20:15:15.98Z" },
+    { url = "https://files.pythonhosted.org/packages/dc/43/07173f95f902e6f16a0f84a89ab6ace3a81957414009134d5ef804fee7b3/ezkl-23.0.5-cp37-abi3-win32.whl", hash = "sha256:61e621e97fabc5c5a4f9b2e8e5499fc8c37c4265158ebbe3e74fff434c08b091", size = 10375547, upload-time = "2026-02-20T20:15:19.533Z" },
+    { url = "https://files.pythonhosted.org/packages/04/4d/6ad33b473a1a5dbdb054440ef78f409fcf5cbfe385981da60e2cb445afca/ezkl-23.0.5-cp37-abi3-win_amd64.whl", hash = "sha256:a7690d3cc441716866910ff13e6746381afb352f860712f4577e1a7dd1b5a9d1", size = 12099065, upload-time = "2026-02-20T20:15:22.43Z" },
+]
+
+[[package]]
 name = "filelock"
 version = "3.29.0"
 source = { registry = "https://pypi.org/simple" }
@@ -399,6 +413,7 @@ name = "network"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "ezkl" },
     { name = "onnx" },
     { name = "onnxruntime" },
     { name = "onnxscript" },
@@ -409,6 +424,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "ezkl" },
     { name = "onnx" },
     { name = "onnxruntime", specifier = ">=1.24.4" },
     { name = "onnxscript", specifier = ">=0.7.0" },

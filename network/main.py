@@ -9,7 +9,7 @@ from onnxsim import simplify
 from transformers import CLIPTextModel, CLIPTokenizer
 
 ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), "artifacts")
-WORDLIST_PATH = os.path.join(os.path.dirname(__file__), "wordlist.json")
+WORDLIST_PATH = os.path.join(os.path.dirname(__file__), "vocabulary.json")
 
 
 def load_wordlist():
@@ -96,3 +96,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

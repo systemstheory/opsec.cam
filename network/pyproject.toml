@@ -11,4 +11,5 @@ dependencies = [
     "onnxsim",
     "onnxruntime>=1.24.4",
     "onnxscript>=0.7.0",
+    "ezkl",
 ]
