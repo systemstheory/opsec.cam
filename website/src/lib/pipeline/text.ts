@@ -73,8 +73,17 @@ export async function witnessAndScore(embedding: Float32Array): Promise<{
 	const instances: bigint[] = witness.outputs[0].flat();
 	const scores = instances.map(fieldToFloat);
 
+	const REGISTER_SIZE = 8;
+	const scored = LABELS.map((label, i) => ({ label, score: scores[i] }));
+	const topPerRegister = Array.from({ length: REGISTER_SIZE }, (_, r) => {
+		const register = scored.slice(r * REGISTER_SIZE, (r + 1) * REGISTER_SIZE);
+		const top = [...register].sort((a, b) => b.score - a.score)[0];
+		console.log(`[register ${r}]`, register.map(e => `${e.label}:${e.score.toFixed(4)}`).join(', '), '→ top:', top.label, top.score.toFixed(4));
+		return top;
+	});
+
 	return {
-		labels: LABELS.map((label, i) => ({ label, score: scores[i] })),
+		labels: topPerRegister,
 		instances,
 		witnessBytes: new Uint8ClampedArray(raw.buffer, raw.byteOffset, raw.byteLength)
 	};
