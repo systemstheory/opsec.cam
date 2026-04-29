@@ -2,11 +2,13 @@
 	let {
 		state,
 		oncapture,
-		onadvertise
+		onadvertise,
+		onretry
 	}: {
 		state: string;
 		oncapture: (blob: Blob) => void;
 		onadvertise: () => void;
+		onretry: () => void;
 	} = $props();
 
 	function handleFileChange(e: Event) {
@@ -16,46 +18,69 @@
 </script>
 
 <div class="controls">
-	{#if state === 'idle'}
-		<label class="btn">
-			capture
-			<input type="file" accept="image/*" capture="environment" onchange={handleFileChange} />
-		</label>
-	{:else if state === 'proved'}
-		<button class="btn" onclick={onadvertise}>advertise</button>
-	{:else if state === 'embedding'}
-		<span class="status">embedding…</span>
-	{:else if state === 'proving'}
-		<span class="status">proving…</span>
-	{:else if state === 'advertising'}
-		<span class="status">advertising…</span>
-	{/if}
-
-	<button class="btn" onclick={() => {}}>browse</button>
+	<div class="slot left">
+		{#if state === 'advertising'}
+			<button class="btn" onclick={onretry}>retry</button>
+		{/if}
+	</div>
+	<div class="slot center">
+		{#if state === 'proved'}
+			<button class="btn" onclick={onadvertise}>advertise</button>
+		{:else}
+			<label class="btn" class:disabled={state !== 'idle'}>
+				capture
+				<input type="file" accept="image/*" capture="environment" onchange={handleFileChange} disabled={state !== 'idle'} />
+			</label>
+		{/if}
+	</div>
+	<div class="slot right">
+		<button class="btn" onclick={() => {}}>browse</button>
+	</div>
 </div>
 
 <style>
 	.controls {
-		display: flex;
-		justify-content: center;
+		display: grid;
+		grid-template-columns: 4rem 1fr 4rem;
+		align-items: center;
 		padding: 1rem;
+		gap: 0.5rem;
+	}
+
+	.slot {
+		display: flex;
+		align-items: center;
+	}
+
+	.slot.center {
+		justify-content: center;
+	}
+
+	.slot.right {
+		justify-content: flex-end;
 	}
 
 	.btn {
 		cursor: pointer;
-		padding: 0.5rem 1.25rem;
+		width: 4rem;
+		height: 4rem;
+		padding: 0;
 		background: white;
 		color: black;
 		border: none;
 		font-size: 1rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.btn input {
 		display: none;
 	}
 
-	.status {
-		opacity: 0.5;
-		font-size: 1rem;
+	.btn.disabled {
+		opacity: 0.4;
+		cursor: default;
 	}
+
 </style>

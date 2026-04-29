@@ -2,7 +2,6 @@ import init, { genWitness, prove, serialize, deserialize, init_panic_hook } from
 
 // ── constants ─────────────────────────────────────────────────────────────────
 
-let LABELS: string[] = [];
 const OUTPUT_SCALE = 14; // model_output_scales from settings.json
 
 // BN254 field modulus — field elements above half-modulus are negative
@@ -40,14 +39,14 @@ async function setup(): Promise<Artifacts> {
 	}
 
 	if (!artifacts) {
-		const [model, pk, srs, vocab] = await Promise.all([
+		const [model, pk, srs, vocabulary] = await Promise.all([
 			fetchBytes(`${baseUrl}/artifacts/model.compiled`),
 			fetchBytes(`${baseUrl}/artifacts/pk.key`),
 			fetchBytes(`${baseUrl}/artifacts/kzg15.srs`),
-			fetch(`${baseUrl}/artifacts/vocabulary.json`).then((r) => r.json())
+			fetch(`${baseUrl}/artifacts/vocabulary.json`, { cache: 'no-store' }).then((r) => r.json())
 		]);
-		LABELS = Array.isArray(vocab) ? vocab : Object.values(vocab);
-		artifacts = { model, pk, srs };
+
+		artifacts = { model, pk, srs, vocabulary };
 	}
 
 	return artifacts;
@@ -73,8 +72,10 @@ export async function witnessAndScore(embedding: Float32Array): Promise<{
 	const instances: bigint[] = witness.outputs[0].flat();
 	const scores = instances.map(fieldToFloat);
 
+  console.log(artifacts.vocabulary);
+
 	const REGISTER_SIZE = 8;
-	const scored = LABELS.map((label, i) => ({ label, score: scores[i] }));
+	const scored = artifacts.vocabulary.map((label, i) => ({ label, score: scores[i] }));
 	const topPerRegister = Array.from({ length: REGISTER_SIZE }, (_, r) => {
 		const register = scored.slice(r * REGISTER_SIZE, (r + 1) * REGISTER_SIZE);
 		const top = [...register].sort((a, b) => b.score - a.score)[0];

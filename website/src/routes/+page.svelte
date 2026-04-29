@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Frame from '$lib/components/Frame.svelte';
 	import Controls from '$lib/components/Controls.svelte';
-	import Statusbar from '$lib/components/Statusbar.svelte';
 	import { embedImage } from '$lib/pipeline/vision';
 	import type { ProveResult } from '$lib/pipeline/prover';
 	import ProverWorker from '$lib/pipeline/prover.worker.ts?worker';
@@ -47,8 +46,22 @@
 		txHash = await advertise(proofData.proof, proofData.instances);
 		state = 'idle';
 	}
+
+	function handleRetry() {
+		state = 'proved';
+	}
 </script>
 
-<Frame {labels} />
-<Controls {state} oncapture={handleCapture} onadvertise={handleAdvertise} />
-<Statusbar {state} {txHash} />
+<div class="center">
+	<Frame {labels} />
+</div>
+<Controls {state} oncapture={handleCapture} onadvertise={handleAdvertise} onretry={handleRetry} />
+
+<style>
+	.center {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+</style>

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
-  import Statusbar from '$lib/components/Statusbar.svelte';
   import '../app.css';
 
 	let { children } = $props();
