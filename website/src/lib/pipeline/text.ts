@@ -46,7 +46,7 @@ async function setup(): Promise<Artifacts> {
 			fetchBytes(`${baseUrl}/artifacts/kzg15.srs`),
 			fetch(`${baseUrl}/artifacts/vocabulary.json`).then((r) => r.json())
 		]);
-		LABELS = vocab;
+		LABELS = Array.isArray(vocab) ? vocab : Object.values(vocab);
 		artifacts = { model, pk, srs };
 	}
 
