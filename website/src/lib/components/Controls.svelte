@@ -19,22 +19,30 @@
 
 <div class="controls">
 	<div class="slot left">
-		{#if state === 'advertising'}
+		{#if state === 'proved' || state === 'advertising'}
 			<button class="btn" onclick={onretry}>retry</button>
 		{/if}
 	</div>
+
 	<div class="slot center">
 		{#if state === 'proved'}
-			<button class="btn" onclick={onadvertise}>advertise</button>
+			<button class="btn" onclick={onadvertise}> advertise </button>
 		{:else}
 			<label class="btn" class:disabled={state !== 'idle'}>
 				capture
-				<input type="file" accept="image/*" capture="environment" onchange={handleFileChange} disabled={state !== 'idle'} />
+				<input
+					type="file"
+					accept="image/*"
+					capture="environment"
+					onchange={handleFileChange}
+					disabled={state !== 'idle'}
+				/>
 			</label>
 		{/if}
 	</div>
+
 	<div class="slot right">
-		<button class="btn" onclick={() => {}}>browse</button>
+		<!--<a class="btn" href="/photos">Gallery</a>-->
 	</div>
 </div>
 
@@ -82,5 +90,4 @@
 		opacity: 0.4;
 		cursor: default;
 	}
-
 </style>

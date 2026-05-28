@@ -12,7 +12,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"upload:artifacts": "aws s3 sync ./static/artifacts s3://$R2_BUCKET/artifacts --endpoint-url $R2_ENDPOINT_URL --exclude \".DS_Store\" --exclude \".cache/*\"",
+		"upload:artifacts": "aws s3 sync ./static/artifacts s3://$R2_BUCKET/artifacts --endpoint-url $R2_ENDPOINT_URL --exclude \".DS_Store\"",
 		"upload:model": "aws s3 sync ./static/model s3://$R2_BUCKET/model --exclude \".DS_Store\" --exclude \".cache/*\" --endpoint-url $R2_ENDPOINT_URL"
 	},
 	"dependencies": {

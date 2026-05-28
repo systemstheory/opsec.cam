@@ -39,14 +39,16 @@ export async function fetch(cursor: [start: number, end: number]): Promise<NFTMe
 	const [start, end] = cursor;
 	const publicClient = createPublicClient({ chain: PUBLIC_NETWORK, transport: http() });
 
-	const tokenIds = (await publicClient.multicall({
-		contracts: Array.from({ length: end - start }, (_, i) => ({
-			address: contractAddress,
-			abi,
-			functionName: 'tokenByIndex',
-			args: [BigInt(start + i)]
-		}))
-	})).map((r) => r.result as bigint);
+	const tokenIds = (
+		await publicClient.multicall({
+			contracts: Array.from({ length: end - start }, (_, i) => ({
+				address: contractAddress,
+				abi,
+				functionName: 'tokenByIndex',
+				args: [BigInt(start + i)]
+			}))
+		})
+	).map((r) => r.result as bigint);
 
 	const meta = await publicClient.multicall({
 		contracts: tokenIds.flatMap((tokenId) => [
@@ -63,6 +65,5 @@ export async function fetch(cursor: [start: number, end: number]): Promise<NFTMe
 }
 
 export function shortenAddress(address: Address): string {
-  return `${address.slice(0, 5)}...${address.slice(-3, 0)}`
+	return `${address.slice(0, 5)}...${address.slice(-3, 0)}`;
 }
-

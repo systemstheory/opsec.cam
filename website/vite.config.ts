@@ -1,8 +1,14 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import { execSync } from 'child_process';
 import wasm from 'vite-plugin-wasm';
 
+const commitHash = execSync('git rev-parse --short HEAD');
+
 export default defineConfig({
+	define: {
+		__GIT_HASH__: JSON.stringify(commitHash)
+	},
 	plugins: [sveltekit(), wasm()],
 	server: {
 		headers: {

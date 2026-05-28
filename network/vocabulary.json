@@ -1,67 +1,62 @@
-
-  "x-treme",
-  "cold storage",
-  "gothic",
-  "good luck",
-  "glycerin",
-  "Looney Tunes",
-  "Melatonin",
-  "venture capital",
-  "soundsystem",
-  "surrounded with screens",
-  "adorned with flowers",
-  "Malibu",
-  "outskirts",
-  "Tonopah Test Range",
-  "mud",
-  "perfect storm",
-  "gay",
-  "druid",
-  "ogusers",
-  "cat",
-  "crowd",
-  "socialite",
-  "worker",
-  "earth angel",
-  "dancing",
-  "drinking",
-  "reading",
-  "writing",
-  "eating",
-  "carry",
-  "flying",
-  "shooting",
-  "socks",
-  "dress",
-  "shirt",
-  "camo",
-  "petals",
-  "fur",
-  "mesh",
-  "boots",
-  "glasses",
-  "keys",
-  "wearing headphones",
-  "wearing a hat",
-  "makeup",
-  "electronics",
-  "bag",
-  "dnb",
-  "techno",
-  "classical",
-  "ambient",
-  "trance-like",
-  "punk",
-  "noise",
-  "trap",
-  "made out of 3M fabric",
-  "spirulina",
-  "biodegradable",
-  "threshold",
-  "Phosphor",
-  "holography",
-  "grid-like",
-  "2C-B",
-  "neoprene"
+[
+  {
+    "register": "environment",
+    "concepts": [
+      { "label": "Malibu", "synonyms": ["malibu", "outdoors", "seaside", "poolside"] },
+      { "label": "outskirts", "synonyms": ["outskirts", "train tracks", "scrapyard"] },
+      { "label": "Berghain",   "synonyms": ["club", "Berghain"] },
+      { "label": "domestic", "synonyms": ["indoors", "home", "kitchen", "bedroom", "living room"] },
+      { "label": "adorned with flowers", "synonyms": ["adorned with flowers"] },
+      { "label": "surrounded with screens", "synonyms": ["surrounded with screens", "laptop", "computers"] }
+    ]
+  },
+  {
+    "register": "class",
+    "concepts": [
+      { "label": "puppy", "synonyms": ["puppy"] },
+      { "label": "cat", "synonyms": ["cat"] },
+      { "label": "crowd", "synonyms": ["crowd", "multiple beings"] },
+      { "label": "druid", "synonyms": ["druid"] },
+      { "label": "dj", "synonyms": ["dj", "hacker"] },
+      { "label": "unknown", "synonyms": ["objects"] }
+    ]
+  },
+  {
+    "register": "material",
+    "concepts": [
+      { "label": "grid-like", "synonyms": ["in-game footage", "grid-like", "high definition", "3d render"] },
+      { "label": "realistic", "synonyms": ["shot on iphone", "photo"] },
+      { "label": "wlop", "synonyms": ["wlop", "painting"] },
+      { "label": "camo", "synonyms": ["pattern", "dirt", "camo"] },
+      { "label": "phosphor", "synonyms": ["solarized", "glowing", "strobe lights", "flash"] },
+      { "label": "threshold", "synonyms": ["manga", "scan", "black and white", "threshold", "page in a book"] }
+    ]
+  },
+  {
+    "register": "aesthetic",
+    "concepts": [
+      { "label": "gothic", "synonyms": ["sad", "melancholy", "low light", "gothic"] },
+      { "label": "cold storage", "synonyms": ["industrial", "stainless steel", "made out of glass", "y2k", "cold storage", "blurry"] },
+      { "label": "2c-b", "synonyms": ["2c-b", "trippy", "colorful", "rainbow"] },
+      { "label": "good luck", "synonyms": ["sun", "dappled light", "sunset", "calm"] }
+    ]
+  },
+  {
+    "register": "state",
+    "concepts": [
+      { "label": "trance-like", "synonyms": ["trance", "hypnotized", "drunk", "high", "dancing"] },
+      { "label": "xxposed", "synonyms": ["exposed", "shocked", "wide-eyed"] },
+      { "label": "alert", "synonyms": ["alert", "paying attention", "scouting"] },
+      { "label": "resting", "synonyms": ["resting", "sleeping", "eyes closed"] }
+    ]
+  },
+  {
+    "register": "genre",
+    "concepts": [
+      { "label": "dnb",  "synonyms": ["dnb", "drum and bass"] },
+      { "label": "techno", "synonyms": ["techno music"] },
+      { "label": "drone", "synonyms": ["drone", "hum", "noise"] },
+      { "label": "birds singing", "synonyms": ["birds singing"] }
+    ]
+  }
 ]
-

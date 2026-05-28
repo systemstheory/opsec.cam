@@ -18,7 +18,7 @@ async function getModel() {
 	visionModel ??= await CLIPVisionModelWithProjection.from_pretrained('clip', {
 		device: 'wasm',
 		dtype: 'fp32',
-		model_file_name: 'vision_model',
+		model_file_name: 'vision_model'
 	});
 	return visionModel;
 }
@@ -42,12 +42,13 @@ export function cosineSimilarity(a: Float32Array, b: Float32Array): number {
 // ── canvas preprocessing ───────────────────────────────────────────────────────
 
 async function preprocess(src: ImageInput): Promise<Tensor> {
-	const bitmap = src instanceof ImageBitmap
-		? src
-		: await createImageBitmap(
-				typeof src === 'string' ? await fetch(src).then((r) => r.blob()) : src,
-				{ colorSpaceConversion: 'none', premultiplyAlpha: 'none' }
-		  );
+	const bitmap =
+		src instanceof ImageBitmap
+			? src
+			: await createImageBitmap(
+					typeof src === 'string' ? await fetch(src).then((r) => r.blob()) : src,
+					{ colorSpaceConversion: 'none', premultiplyAlpha: 'none' }
+				);
 
 	const sw = bitmap.width;
 	const sh = bitmap.height;
@@ -68,8 +69,8 @@ async function preprocess(src: ImageInput): Promise<Tensor> {
 
 	for (let y = 0; y < SIZE; y++) {
 		for (let x = 0; x < SIZE; x++) {
-			const sx = ((x + ox) + 0.5) / scale - 0.5;
-			const sy = ((y + oy) + 0.5) / scale - 0.5;
+			const sx = (x + ox + 0.5) / scale - 0.5;
+			const sy = (y + oy + 0.5) / scale - 0.5;
 
 			const x0 = Math.max(0, Math.floor(sx));
 			const y0 = Math.max(0, Math.floor(sy));
@@ -83,8 +84,8 @@ async function preprocess(src: ImageInput): Promise<Tensor> {
 				const tr = src_data[(y0 * sw + x1) * 4 + c];
 				const bl = src_data[(y1 * sw + x0) * 4 + c];
 				const br = src_data[(y1 * sw + x1) * 4 + c];
-				const val = tl * (1 - fx) * (1 - fy) + tr * fx * (1 - fy)
-				          + bl * (1 - fx) * fy       + br * fx * fy;
+				const val =
+					tl * (1 - fx) * (1 - fy) + tr * fx * (1 - fy) + bl * (1 - fx) * fy + br * fx * fy;
 				pixels[c * SIZE * SIZE + y * SIZE + x] = (val / 255 - MEAN[c]) / STD[c];
 			}
 		}
