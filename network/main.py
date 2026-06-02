@@ -97,11 +97,6 @@ def main():
     concept_vectors = encode_concepts(labels, synonym_lists)
     concept_vectors = concept_vectors / concept_vectors.norm(dim=1, keepdim=True)
 
-    clip = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-    logit_scale = clip.logit_scale.exp().item()
-    print(f"logit_scale: {logit_scale:.4f}")
-    concept_vectors = concept_vectors * logit_scale
-
     model = ConceptMapper(concept_vectors)
     model.eval()
 

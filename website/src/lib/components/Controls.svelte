@@ -19,7 +19,7 @@
 
 <div class="controls">
 	<div class="slot left">
-		{#if state === 'proved' || state === 'advertising'}
+		{#if state === 'labelled' || state === 'proved' || state === 'advertising'}
 			<button class="btn" onclick={onretry}>retry</button>
 		{/if}
 	</div>

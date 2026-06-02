@@ -2,7 +2,7 @@ import init, { genWitness, prove, serialize, deserialize, init_panic_hook } from
 
 // ── constants ─────────────────────────────────────────────────────────────────
 
-const OUTPUT_SCALE = 63; // empirically determined from witness output vs onnxruntime comparison
+const OUTPUT_SCALE = 7; // matches model_output_scales in settings.json
 
 // BN254 field modulus — field elements above half-modulus are negative
 const FIELD_MOD = BigInt(
@@ -76,18 +76,21 @@ export async function witnessAndScore(embedding: Float32Array): Promise<{
 	// and detach the original buffer (causing Option::unwrap() None panic in prove).
 	const witnessBytes = new Uint8ClampedArray(raw);
 	const witness = deserialize(raw);
-	const outputGrid = witness.outputs[0] as BigNum[][];
+	const outputGrid = witness.outputs[0];
+	console.log('[outputs] typeof outputs[0]:', typeof outputGrid, Array.isArray(outputGrid));
+	console.log('[outputs] outputs[0][0]:', JSON.stringify((outputGrid as unknown[][])?.[0]));
 	console.log(
-		'[outputs[0] structure]',
-		`${outputGrid.length} sub-arrays, first has ${outputGrid[0]?.length} elements`
+		'[outputs] outputs[0][0][0]:',
+		JSON.stringify((outputGrid as unknown[][][])?.[0]?.[0])
 	);
-
-	const flat: BigNum[] = outputGrid.flat();
-	const stride = flat.length / outputGrid.length; // elements per vocab word
-	console.log('[stride]', stride);
-
-	// try each stride offset (0..stride-1) as the score position
-	const instances: BigNum[] = flat;
+	// outputs[0] may be FieldElement[][] (batch-wrapped) or FieldElement[] — detect by depth
+	const firstElem = (outputGrid as unknown[])[0];
+	const flat: FieldElement[] =
+		Array.isArray(firstElem) && Array.isArray((firstElem as unknown[])[0])
+			? (outputGrid as FieldElement[][]).flat()
+			: (outputGrid as FieldElement[]);
+	console.log('[outputs] flat[0]:', JSON.stringify(flat[0]), typeof flat[0]);
+	const instances: bigint[] = flat.map(fieldToBigInt);
 	const scores = flat.map(fieldToFloat);
 
 	// Support register format {register, concepts:[{index,label}]} and legacy flat string[]
@@ -138,14 +141,20 @@ export async function generateProof(witnessBytes: Uint8ClampedArray): Promise<Ui
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
-type BigNum = { s: number; e: number; c: number[] };
+// Witness field elements are [u64, u64, u64, u64] strings (4-limb little-endian)
+type FieldElement = string[];
 
-function fieldToFloat(fe: BigNum): number {
-	// Reconstruct the decimal value from BigNumber { s, e, c }
-	const c = fe.c;
-	let str = c[0].toString();
-	for (let i = 1; i < c.length; i++) str += c[i].toString().padStart(14, '0');
-	const raw = BigInt(str);
-	const signed = raw > HALF_MOD ? raw - FIELD_MOD : raw;
+function limbs(fe: FieldElement): bigint {
+	return fe.reduce((acc, limb, i) => acc + BigInt(limb) * (1n << BigInt(i * 64)), 0n);
+}
+
+function fieldToFloat(fe: FieldElement): number {
+	const v = limbs(fe);
+	const signed = v > HALF_MOD ? v - FIELD_MOD : v;
 	return Number(signed) / Math.pow(2, OUTPUT_SCALE);
+}
+
+function fieldToBigInt(fe: FieldElement): bigint {
+	const v = limbs(fe);
+	return v > HALF_MOD ? v - FIELD_MOD : v;
 }
