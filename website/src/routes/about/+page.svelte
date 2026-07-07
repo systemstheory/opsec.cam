@@ -7,6 +7,8 @@
 	import Register from '$lib/assets/Register.svelte';
 	import Frame from '$lib/assets/Frame.svelte';
 	import { PUBLIC_OPSEC_CAMERA_ADDRESS } from '$env/static/public';
+
+	declare const __GIT_HASH__: string;
 </script>
 
 <div class="about">
@@ -19,7 +21,7 @@
 		A lens is a fixed set of rules for interpreting the image encased in a zero-knowledge circuit: it
 		ranks 128 curated phrases by similarity to the image and outputs the top 6 as a caption, along with
 		a proof that this exact set of rules produced it. Output of the lens can then be posted by anyone
-		with a valid proof of this computation into a shared registry of image captions.
+		with a valid proof of this computation into a shared registry.
 	</p>
 	<figure>
 		<Circuit />
@@ -50,7 +52,9 @@
 		</span>
 
 		<span>
-			<a href="https://github.com/__GIT_HASH__" target="_blank"> __GIT_HASH__ </a>
+			<a href="https://github.com/systemstheory/opsec.cam/commit/{__GIT_HASH__}" target="_blank"
+				>{__GIT_HASH__}</a
+			>
 		</span>
 	</p>
 </div>
