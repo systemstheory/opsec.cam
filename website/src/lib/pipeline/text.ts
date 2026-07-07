@@ -44,9 +44,9 @@ async function setup(): Promise<Artifacts> {
 
 	if (!artifacts) {
 		const [model, pk, srs, vocabulary] = await Promise.all([
-			fetchBytes(`${baseUrl}/artifacts/model.compiled`),
-			fetchBytes(`${baseUrl}/artifacts/pk.key`),
-			fetchBytes(`${baseUrl}/artifacts/kzg17.srs`),
+			fetchBytes(`${baseUrl}/artifacts/model.compiled`, { cache: 'no-store' }),
+			fetchBytes(`${baseUrl}/artifacts/pk.key`, { cache: 'no-store' }),
+			fetchBytes(`${baseUrl}/artifacts/kzg17.srs`, { cache: 'no-store' }),
 			fetch(`${baseUrl}/artifacts/vocabulary.json`, { cache: 'no-store' }).then((r) => r.json())
 		]);
 
@@ -109,7 +109,7 @@ export async function witnessAndScore(embedding: Float32Array): Promise<{
 				const winner = reg.concepts.reduce((best, c) =>
 					scores[c.index] > scores[best.index] ? c : best
 				);
-				return { label: `${reg.register}: ${winner.label}`, score: scores[winner.index] };
+				return { label: winner.label, score: scores[winner.index] };
 			}
 		);
 	} else {

@@ -3,3 +3,27 @@
 	--secondary: black;
 	--text: white;
 }
+
+.btn {
+	cursor: pointer;
+	width: 4rem;
+	height: 4rem;
+	padding: 0;
+	background: white;
+	color: black;
+	border: none;
+	font-size: 1rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+}
+
+.btn input {
+	display: none;
+}
+
+.btn.disabled {
+	opacity: 0.4;
+	cursor: default;
+}

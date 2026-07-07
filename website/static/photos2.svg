@@ -1,0 +1,16 @@
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="50" height="50" fill="#D9D9D9"/>
+<path d="M4 4H0V0H4V4Z" fill="#3D3D3D"/>
+<path d="M50 4H46V0H50V4Z" fill="#3D3D3D"/>
+<path d="M50 50H46V46H50V50Z" fill="#3D3D3D"/>
+<path d="M4 50H0V46H4V50Z" fill="#3D3D3D"/>
+<path d="M15 15H5V5H15V15Z" fill="#3D3D3D"/>
+<path d="M30 15H20V5H30V15Z" fill="#3D3D3D"/>
+<path d="M45 15H35V5H45V15Z" fill="#3D3D3D"/>
+<path d="M15 30H5V20H15V30Z" fill="#3D3D3D"/>
+<path d="M30 30H20V20H30V30Z" fill="#3D3D3D"/>
+<path d="M45 30H35V20H45V30Z" fill="#3D3D3D"/>
+<path d="M15 45H5V35H15V45Z" fill="#3D3D3D"/>
+<path d="M30 45H20V35H30V45Z" fill="#3D3D3D"/>
+<path d="M45 45H35V35H45V45Z" fill="#3D3D3D"/>
+</svg>

@@ -11,13 +11,24 @@ export type NFTMetadata = {
 	uri: string;
 };
 
-export async function advertise(proof: Uint8Array, instances: bigint[]): Promise<`0x${string}`> {
+export async function connectWallet(): Promise<`0x${string}`> {
 	const walletClient = createWalletClient({
 		chain: PUBLIC_NETWORK,
 		transport: custom((window as any).ethereum)
 	});
-
 	const [account] = await walletClient.requestAddresses();
+	return account;
+}
+
+export async function advertise(
+	account: `0x${string}`,
+	proof: Uint8Array,
+	instances: bigint[]
+): Promise<`0x${string}`> {
+	const walletClient = createWalletClient({
+		chain: PUBLIC_NETWORK,
+		transport: custom((window as any).ethereum)
+	});
 
 	const publicClient = createPublicClient({
 		chain: PUBLIC_NETWORK,

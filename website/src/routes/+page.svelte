@@ -1,47 +1,103 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Frame from '$lib/components/Frame.svelte';
-	import Controls from '$lib/components/Controls.svelte';
+	import Camera from '$lib/components/Camera.svelte';
 	import { embedImage } from '$lib/pipeline/vision';
-	import { type ProveResult, prove } from '$lib/pipeline/prover';
-	import { advertise } from '$lib/wallet/wallet';
+	import { prove } from '$lib/pipeline/prover';
+	import { connectWallet, advertise } from '$lib/wallet/wallet';
+	import { controls } from '$lib/controls.svelte';
 
-	type State = 'idle' | 'embedding' | 'proving' | 'labelled' | 'proved' | 'advertising';
+	let cameraCapture: (() => Promise<Blob>) | undefined = $state();
 
-	let state: State = $state('idle');
-	let labels: string[] = $state([]);
-	let proofData: ProveResult | null = $state(null);
-	let txHash: string | undefined = $state(undefined);
+	const EMBEDDING_CYCLE_MS = 4 * 750;
+	const PROVING_CYCLE_MS = 6 * 750;
+	const ADVERTISING_CYCLE_MS = 5 * 750;
 
-	async function handleCapture(blob: Blob) {
-		state = 'embedding';
+	function waitCycle(startMs: number, cycleMs: number) {
+		const elapsed = Date.now() - startMs;
+		const remaining = elapsed < cycleMs ? cycleMs - elapsed : 0;
+		return remaining > 0 ? new Promise<void>((r) => setTimeout(r, remaining)) : Promise.resolve();
+	}
+
+	async function handleCapture() {
+		if (!cameraCapture) return;
+		const blob = await cameraCapture();
+		controls.capturedFrame = URL.createObjectURL(blob);
+		controls.state = 'embedding';
+		const embeddingStart = Date.now();
 		const embedding = await embedImage(blob);
-
-		state = 'proving';
+		await waitCycle(embeddingStart, EMBEDDING_CYCLE_MS);
+		controls.state = 'proving';
+		const provingStart = Date.now();
 		const { labelsReady, proofReady } = prove(embedding);
-
-		const { labels: l } = await labelsReady;
-		labels = l.map((x) => x.label);
-		state = 'labelled';
-
-		proofData = await proofReady;
-		state = 'proved';
+		const [{ labels: l }, proofData] = await Promise.all([labelsReady, proofReady]);
+		controls.labels = l.map((x) => x.label);
+		controls.proofData = proofData;
+		await waitCycle(provingStart, PROVING_CYCLE_MS);
+		controls.state = 'proved';
 	}
 
 	async function handleAdvertise() {
-		if (!proofData) return;
-		state = 'advertising';
-		txHash = await advertise(proofData.proof, proofData.instances);
-		state = 'idle';
+		if (!controls.proofData) return;
+		let account: `0x${string}`;
+		try {
+			account = await connectWallet();
+		} catch {
+			return;
+		}
+		controls.state = 'advertising';
+		const advertisingStart = Date.now();
+		try {
+			await advertise(account, controls.proofData.proof, controls.proofData.instances);
+			await waitCycle(advertisingStart, ADVERTISING_CYCLE_MS);
+			controls.state = 'idle';
+		} catch {
+			controls.state = 'proved';
+		}
 	}
 
 	function handleRetry() {
-		state = 'idle';
-		labels = [];
-		proofData = null;
-		txHash = undefined;
+		if (controls.capturedFrame) URL.revokeObjectURL(controls.capturedFrame);
+		controls.capturedFrame = null;
+		controls.state = 'idle';
+		controls.labels = [];
+		controls.proofData = null;
 	}
+
+	onMount(() => {
+		controls.oncapture = handleCapture;
+		controls.onadvertise = handleAdvertise;
+		controls.onretry = handleRetry;
+		return () => {
+			controls.oncapture = null;
+			controls.onadvertise = null;
+			controls.onretry = null;
+		};
+	});
 </script>
 
-<Frame {labels} />
+<div class="viewport-area">
+	<div class="viewport">
+		<Camera bind:capture={cameraCapture} frozenSrc={controls.capturedFrame} />
+		{#if controls.state === 'proved' || controls.state === 'advertising'}
+			<Frame labels={controls.labels} />
+		{/if}
+	</div>
+</div>
 
-<Controls {state} oncapture={handleCapture} onadvertise={handleAdvertise} onretry={handleRetry} />
+<style>
+	.viewport-area {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.viewport {
+		width: 100%;
+		aspect-ratio: 1;
+		position: relative;
+		overflow: hidden;
+		background: #000;
+	}
+</style>

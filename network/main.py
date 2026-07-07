@@ -97,6 +97,9 @@ def main():
     concept_vectors = encode_concepts(labels, synonym_lists)
     concept_vectors = concept_vectors / concept_vectors.norm(dim=1, keepdim=True)
 
+    TEMPERATURE = 8.0
+    concept_vectors = concept_vectors * TEMPERATURE
+
     model = ConceptMapper(concept_vectors)
     model.eval()
 
