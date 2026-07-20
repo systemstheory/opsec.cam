@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opsec Camera</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #0a0a0a;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    #word {
+      font-size: 2rem;
+      font-weight: 300;
+      color: #fff;
+      cursor: default;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <span id="word"></span>
+  <script>
+    const words = ["strawberry", "powerplant", "GeForce RTX 4090", "stunning", "moral gray zone", "3g", "cellular", "skate", "vivienne westwood", "kyoto", "berlin", "london", "french", "outskirts", "detroit", "paris", "hard drive", "ogusers", "rainy", "gravity", "2c-b", "surrounded with screens", "melatonin", "vitamin d3", "techno", "drum", "beauty", "face mask", "keyboard", "euphoria", "chanel", "england", "patriot", "exhale", "streamer", "snow", "sports", "muscle", "no fear", "footprint", "airport", "open field", "tracksuit", "e-pill", "limbs", "fern", "full moon", "x-treme", "effigy", "acid", "magic", "palms", "heat", "phosphor", "ticking time bomb", "laser", "god blocker", "plug puller", "cord-cutter", "bit rot", "colourphobia", "energy", "e-brake", "exogen", "perfect storm", "distribured denial of service", "drifrting", "cosplayer", "arctic ops", "oscillation", "home", "Tonopah Test Range", "tpot", "rat", "sunset", "forest", "gps", "catapult", "hacker", "socialite", "civilisation", "goth", "smeared", "silk road", "glow", "seized assets", "elliptic", "splinter", "wooden table", "butterfly", "smoke", "Looney Tunes", "Team Fortress 2", "nighttime!!!!!!", "cold", "blue light", "green light", "satellites", "stars", "k-hole", "lock", "prey", "mage",  "druid", "damascus", "petal", " adorned with flowers", "snorkel", "wearing a swim suit", "fluorescent print", "paint", "mathematics", "wearing a mask", "anarchist", "punk", "hard core", "soft core", "trance-like", "3D render", "phone", "diffuse light", "grid-like", "star", "aircraft", "underwater", "poolside", "headshot", "dnb", "breakcore", "exposed", "stealth", "LA", "Malibu", "insufferable", "ripstop", "t-shirt", "shirt", "e-ink", "under shadow", "lounging", "tired", "infra-red", "🔦", "breathing", "unidentifiable", "AES-256", "tornado", "low health", "puppy", "in love", "position", "typewriter text", "trench coat", "blue berries", "genki ramune", "made out of wood", "bag", "lyocell", "cowboy", "cowgirl", "high exposure", "threshold", "cereal", "water", "LED panel", "made out of 3M fabric", "display", "sun", "arms", "body", "legs", "flesh", "skin", "bone", "sinew", "good luck", "anime", "big pharma", "opaque", "dripping", "reading", "drinking", "upside down", "shooting", "aiming", "tradecraft",  "earth angel", "pretty", "earrings", "socks", "gun", "NDA", "eye", "cat", "wolf", "EDM", "lovense", "ghost", "classical", "expressionist", "keychain", "credit cards", "deck of cards", "alarm", "rigged", "lost", "stone", "hair", "glycerin", "clouds", "blood", "soundsystem", "intel", "crowd", "carry", "whisper", "systems", "pelican case", "product introduction photo", "ink and paper", "holography", "no", "yes", "blue", "iv drip", "low dark light", "laptop", "wikileaks", "drop", "sweat", "bacteria", "ribbon", "mesh", "fintech", "cell", "quicksort", "spirulina", "boots", "trail", "vodka", "dress", "cigarette", "crush", "tekno", "hi-vis", "liquid", "wlop", "glass-like", "whiteboard", "chaos", "camo", "jellyfish", "mud", "strobe", "circuits", "burned", "tremble", "chalk", "bio", "flash", "tattoo", "crate", "hand", "bottle", "mdma", "gay", "electronics", "wet", "neoprene", "nighttime", "gloss", "fiber", "firework", "clear", "dust", "club mate", "🩻", "🎭", "bash", "pirate"]
+;
+    let queue = [];
+    let interval = null;
+    const el = document.getElementById("word");
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function nextWord() {
+      if (queue.length === 0) queue = shuffle([...words]);
+      el.textContent = queue.pop();
+    }
+
+    function startRotation(ms) {
+      clearInterval(interval);
+      interval = setInterval(nextWord, ms);
+    }
+
+    nextWord();
+    startRotation(500);
+  </script>
+</body>
+</html>
